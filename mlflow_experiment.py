@@ -1,6 +1,7 @@
 import mlflow
 import mlflow.sklearn
 import pandas as pd
+import traceback  # Added to handle errors properly
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
@@ -40,16 +41,15 @@ with mlflow.start_run() as run:
         mlflow.log_metric("mean_squared_error", mse)
         mlflow.log_metric("r2_score", r2)
         
-        # Log the model along with its signature
+        # Log the model along with its signature (no registration)
         signature = infer_signature(X_train, model.predict(X_train))
         mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="model",
-            signature=signature,
-            registered_model_name="EconomicRiskModel"
+            signature=signature
         )
         
-        print("MLflow experiment completed and model registered successfully!")
+        print("MLflow experiment completed and model logged successfully!")
         
     except Exception as e:
         # Capture the traceback and log it as an artifact
